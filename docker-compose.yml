@@ -1,0 +1,38 @@
+version: '3.6'
+
+secrets:
+  earth_pass:
+    file: ../secrets/rabbitmq_pass
+  earth_user:
+    file: ../secrets/rabbitmq_user
+
+
+
+
+
+services:
+
+  Rabbitmq:
+    hostname: 'rabbitmq'
+    image: rabbitmq:3.8-management
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+    ports:
+    - "4369:4369"
+    - "5671:5671"
+    - "5672:5672"
+    - "25672:25672"
+    - "15671:15671"
+    - "15672:15672"
+    container_name: Rabbitmq
+    restart: 'always'
+    environment:
+      RABBITMQ_DEFAULT_USER_FILE: /run/secrets/rabbitmq_user
+      RABBITMQ_DEFAULT_PASS_FILE: /run/secrets/rabbitmq_pass
+    secrets:
+      - rabbitmq_pass
+      - rabbitmq_user
+    volumes:
+      - ${PWD}/volumes/rabbitmq_datadir:/var/lib/rabbitmq/mnesia/
