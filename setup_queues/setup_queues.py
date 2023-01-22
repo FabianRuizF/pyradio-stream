@@ -16,10 +16,10 @@ parameters = pika.URLParameters(f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBIT
 pika_connection = pika.BlockingConnection(parameters)
 channel = pika_connection.channel()
 
-exchange_name = 'test'
+exchange_name = 'song_exchange'
 channel.exchange_declare(exchange=exchange_name, exchange_type='direct',durable=True)
 
-queue_name = 'test_queue'
+queue_name = 'song_queue'
 queue_parameters = channel.queue_declare(queue=queue_name,durable=True)
 
 
