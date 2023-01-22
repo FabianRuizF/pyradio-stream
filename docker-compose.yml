@@ -2,9 +2,9 @@ version: '3.6'
 
 secrets:
   rabbitmq_pass:
-    file: ../secrets/rabbitmq_pass
+    file: ./secrets/rabbitmq_pass
   rabbitmq_user:
-    file: ../secrets/rabbitmq_user
+    file: ./secrets/rabbitmq_user
 
 
 
