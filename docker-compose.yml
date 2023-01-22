@@ -1,9 +1,9 @@
 version: '3.6'
 
 secrets:
-  earth_pass:
+  rabbitmq_pass:
     file: ../secrets/rabbitmq_pass
-  earth_user:
+  rabbitmq_user:
     file: ../secrets/rabbitmq_user
 
 
