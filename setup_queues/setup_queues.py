@@ -1,9 +1,7 @@
-import mysql.connector
 import pika
 import json
 import os
 import rabbitpy
-import redis
 
 import time
 
