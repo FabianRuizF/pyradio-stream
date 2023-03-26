@@ -63,7 +63,7 @@ def audio():
 
         _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
         while(body is None):
-            print("kek")
+            print("waiting")
             time.sleep(1)
             _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
         message_json = json.loads(body.decode())
@@ -97,7 +97,7 @@ def audio():
            if(len(data)==0):
                _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
                while(body is None):
-                   print("kek")
+                   print("waiting")
                    time.sleep(1)
                    _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
                message_json = json.loads(body.decode())

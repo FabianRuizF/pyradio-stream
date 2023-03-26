@@ -1,3 +1,4 @@
+
 import numpy as np
 import pika
 import json
@@ -40,7 +41,7 @@ for a in range(30):
     channel.basic_publish(exchange=exchange_name, routing_key="",
                                     body=json.dumps(binary_part.decode()),
                                     properties=pika.BasicProperties(delivery_mode=2))
-
+    time.sleep(0.9)
 
 #channel.basic_publish(exchange_name,queue_name,
 #                                json.dumps(audio_encoded.decode()),
