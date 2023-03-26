@@ -34,12 +34,12 @@ queue_name = 'song_queue'
 import struct
 
 
-for a in range(300):
+for a in range(30):
     part = audio_encoded[44100*2*(a):44100*2*(a+1)]
     binary_part= base64.b64encode(part)
-    channel.basic_publish(exchange_name,queue_name
-                                    json.dumps(binary_part.decode()),
-                                    pika.BasicProperties(delivery_mode=2))
+    channel.basic_publish(exchange=exchange_name, routing_key="",
+                                    body=json.dumps(binary_part.decode()),
+                                    properties=pika.BasicProperties(delivery_mode=2))
 
 
 #channel.basic_publish(exchange_name,queue_name,

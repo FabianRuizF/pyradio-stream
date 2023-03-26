@@ -1,3 +1,4 @@
+import time
 from flask import Flask, render_template, Response
 from io import BytesIO
 
@@ -31,33 +32,6 @@ def genHeader(sampleRate, bitsPerSample, channels):
     o += (datasize).to_bytes(4,'little')                                    # (4byte) Data size in bytes
     return o
 
-@app.route("/wav")
-def streamwav():
-    def generate():
-        RABBITMQ_IP = ""
-        RABBITMQ_PASS = "a_simple_user"
-        RABBITMQ_USER = "a_simple_user"
-
-
-
-        parameters = pika.URLParameters(f'amqp://{RABBITMQ_USER}:{RABBITMQ_PASS}@{RABBITMQ_IP}:5672/%2f')
-        pika_connection = pika.BlockingConnection(parameters)
-        channel = pika_connection.channel()
-
-        exchange_name = 'song_exchange'
-        queue_name = 'song_queue'
-
-
-        _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
-        message_json = json.loads(body.decode())
-        decode_string = base64.b64decode(message_json)
-        print(type(decode_string))
-        data_audio = BytesIO(decode_string)
-        data = data_audio.read(1024)
-        while data:
-            yield data
-            data = data_audio.read(1024)
-    return Response(generate(), mimetype="audio/x-wav")
 
 
 
@@ -79,11 +53,19 @@ def audio():
         pika_connection = pika.BlockingConnection(parameters)
         channel = pika_connection.channel()
 
-        exchange_name = 'song_exchange'
-        queue_name = 'song_queue'
 
+        exchange_name = 'song_exchange'
+
+
+        queue_parameters = channel.queue_declare(queue='',exclusive=True)
+        queue_name = queue_parameters.method.queue
+        channel.queue_bind(exchange=exchange_name, queue=queue_name)
 
         _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
+        while(body is None):
+            print("kek")
+            time.sleep(1)
+            _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
         message_json = json.loads(body.decode())
         decode_string = base64.b64decode(message_json)
         print(type(decode_string))
@@ -114,6 +96,10 @@ def audio():
            print(len(data))
            if(len(data)==0):
                _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
+               while(body is None):
+                   print("kek")
+                   time.sleep(1)
+                   _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
                message_json = json.loads(body.decode())
                decode_string = base64.b64decode(message_json)
                print(type(decode_string))
