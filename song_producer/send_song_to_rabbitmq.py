@@ -25,7 +25,7 @@ def chunks(lst, n):
         yield lst[i:i + n]
 
 #change to get audio from flask service
-filepath = "/root/pyradio-stream/song_producer/tmp.wav"
+filepath = "/root/pyradio-stream/song_producer/tmp_v2.wav"
 with open(filepath, 'rb') as f:
 #    audio_encoded = base64.b64encode(f.read())
     audio_encoded = f.read()
@@ -39,9 +39,12 @@ queue_name = 'song_queue'
 import struct
 
 
-wf = wave.open(filepath, 'rb') 
-p = pyaudio.PyAudio()
-bit_len = p.get_format_from_width(wf.getsampwidth())
+
+wf = wave.open(filepath, 'rb')
+import time, os, sys, contextlib
+
+#@contextlib.contextmanager
+bit_len = wf.getsampwidth() * 8
 channels = wf.getnchannels()
 rate = int(wf.getframerate())
 
@@ -50,7 +53,7 @@ json_to_send["bit_len"] = bit_len
 json_to_send["channels"] =channels
 json_to_send["rate"] =rate
 print(len(audio_encoded)/rate/2)
-exit()
+print(json_to_send)
 for a in range(30):
     #psuedo code, change to get the final inde
     if(a=="finish encode"):
