@@ -66,21 +66,24 @@ def audio():
             print("waiting")
             time.sleep(1)
             _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
-        message_json = json.loads(body.decode())
+        body = body.decode()
+        body = json.loads(body)
+        print(dir(body))
+        message_json = body["data"]
         decode_string = base64.b64decode(message_json)
         print(type(decode_string))
         data_audio = BytesIO(decode_string)
 
 
         CHUNK = 1024
-#        sampleRate = 44100
+#        sampleRate = 22050
 #        bitsPerSample = 16
 #        channels = 1
 
-
-        sampleRate = 44100
-        bitsPerSample = 16
-        channels = 1
+        sampleRate = int(body["rate"])
+        bitsPerSample = int(body["bit_len"])
+        channels = int(body["channels"])
+        print(sampleRate,bitsPerSample,channels)
 
         wav_header = genHeader(sampleRate, bitsPerSample, channels)
         #data = data_audio.read(1024)
@@ -100,7 +103,9 @@ def audio():
                    print("waiting")
                    time.sleep(1)
                    _,_,body = channel.basic_get(queue=queue_name,auto_ack=True)
-               message_json = json.loads(body.decode())
+               body = body.decode()
+               body = json.loads(body)
+               message_json = body["data"]
                decode_string = base64.b64decode(message_json)
                print(type(decode_string))
                data_audio = BytesIO(decode_string)
