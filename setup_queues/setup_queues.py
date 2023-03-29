@@ -17,7 +17,11 @@ channel = pika_connection.channel()
 exchange_name = 'song_exchange'
 channel.exchange_declare(exchange=exchange_name, exchange_type='fanout',durable=True)
 
-#queue_name = 'song_queue'
-#queue_parameters = channel.queue_declare(queue=queue_name,durable=True)
-#channel.queue_bind(exchange=exchange_name, queue=queue_name)
+exchange_name = 'song_transformation_exchange'
+channel.exchange_declare(exchange=exchange_name, exchange_type='direct',durable=True)
+
+queue_name = 'song_transformation_queue'
+queue_parameters = channel.queue_declare(queue=queue_name,durable=True)
+
+channel.queue_bind(exchange=exchange_name, queue=queue_name)
 
